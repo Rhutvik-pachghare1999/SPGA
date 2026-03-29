@@ -2,10 +2,11 @@
 
 <div align="center">
 
+[![CI](https://github.com/Rhutvik-pachghare1999/UAV-Aegis/actions/workflows/ci.yml/badge.svg)](https://github.com/Rhutvik-pachghare1999/UAV-Aegis/actions/workflows/ci.yml)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![ROS2](https://img.shields.io/badge/ROS2-Humble-22314E?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/)
-[![Accuracy](https://img.shields.io/badge/CNN_Accuracy-98.4%25-brightgreen)]()
+[![Accuracy](https://img.shields.io/badge/CNN_Accuracy-98.4%25-brightgreen)](results/benchmark_metrics.csv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **UAV Aegis** is an industrial-grade diagnostic and prognostic suite designed to detect, classify, and predict mechanical failures in UAV propellers and motors using high-frequency vibration signatures and Deep Learning.
@@ -111,9 +112,51 @@ graph TD
 
 ---
 
-## 6. 🚀 Quick Start
+## 6. 📈 Reproducible Benchmarks
 
-### 6.1 Setup Environment
+All benchmark scripts, logs, and plots are checked into [`results/`](results/) and regenerated automatically on every CI run.
+
+### 6.1 Run Benchmarks Locally
+
+```bash
+# Full benchmark — saves CSV metrics, JSON summary, latency histogram
+python benchmarks/run_benchmark.py
+
+# Fast smoke test (32 samples, no model weights required)
+python benchmarks/run_benchmark.py --smoke
+```
+
+### 6.2 Benchmark Outputs
+
+| File | Description |
+|------|-------------|
+| [`results/benchmark_metrics.csv`](results/benchmark_metrics.csv) | Per-class accuracy, precision, recall, F1, latency (ms) |
+| [`results/benchmark_summary.json`](results/benchmark_summary.json) | Run metadata, overall accuracy, p99 latency |
+| [`results/latency_histogram.png`](results/latency_histogram.png) | Inference latency distribution plot |
+| [`results/benchmark.log`](results/benchmark.log) | Full console log from last run |
+
+---
+
+## 7. ⚙️ CI / Continuous Integration
+
+This repo uses **GitHub Actions** for automated quality gates on every push and pull request.
+
+```
+Push / PR  →  Lint (flake8)  →  Unit tests (pytest)  →  Benchmark smoke test  →  Upload artifacts
+```
+
+- **Linter**: `flake8` — fails on syntax errors and undefined names; warns on style violations (max line length 120)
+- **Tests**: `pytest tests/ -v` — smoke tests, shape checks, benchmark script execution
+- **Benchmark**: `python benchmarks/run_benchmark.py --smoke` — verifies the metrics pipeline end-to-end
+- **Artifacts**: benchmark results uploaded for 30-day retention on every passing run
+
+See [`.github/workflows/ci.yml`](.github/workflows/ci.yml) for the full workflow definition.
+
+---
+
+## 8. 🚀 Quick Start
+
+### 8.1 Setup Environment
 
 ```bash
 git clone https://github.com/Rhutvik-pachghare1999/UAV-Aegis.git
@@ -121,7 +164,7 @@ cd UAV-Aegis
 pip install -r requirements.txt
 ```
 
-### 6.2 Full Pipeline Execution
+### 8.2 Full Pipeline Execution
 
 | # | Step | Command | Output |
 |---|------|---------|--------|
@@ -134,9 +177,9 @@ pip install -r requirements.txt
 
 ---
 
-## 7. 🔧 Key Algorithms
+## 9. 🔧 Key Algorithms
 
-### 7.1 1D-CNN Fault Classifier
+### 9.1 1D-CNN Fault Classifier
 
 ```
 Input: Raw vibration window [N x 1]
@@ -156,7 +199,7 @@ Input: Raw vibration window [N x 1]
 
 ---
 
-## 8. 🧹 Testing
+## 10. 🧹 Testing
 
 ```bash
 pytest tests/ -v
@@ -168,13 +211,14 @@ pytest tests/ -v
 | 2 | `test_dataset_pipeline.py` | Check sliding window segmentation | ✅ |
 | 3 | `test_augmentation.py` | Validate noise bounds and warping | ✅ |
 | 4 | `test_lstm_rul.py` | Check RUL output is positive float | ✅ |
+| 5 | `test_smoke.py` | Config imports, benchmark smoke, batch shapes | ✅ |
 
 ---
 
-## 9. 📐 Design Decisions
+## 11. 📐 Design Decisions
 
 | # | Decision | Rationale | Benefit |
-|---|----------|-----------|----------|
+|---|----------|-----------|---------|
 | 1 | **1D-CNN over 2D** | Direct vibration processing | Lower latency for edge deployment |
 | 2 | **Stacked LSTM** | Temporal dependency capture | Higher accuracy in degradation prediction |
 | 3 | **ROS2 Humble** | Industry standard middleware | Robust real-time message passing |
@@ -182,13 +226,13 @@ pytest tests/ -v
 
 ---
 
-## 10. 📜 License
+## 12. 📜 License
 
 Distributed under the **MIT License**. See `LICENSE` for details.
 
 ---
 
-## 11. 👤 Author
+## 13. 👤 Author
 
 **Rhutvik Pachghare** | Master's in Robotics & Automation | Arizona State University
 
@@ -197,7 +241,7 @@ Distributed under the **MIT License**. See `LICENSE` for details.
 
 ---
 
-## 12. 📧 Contact & Support
+## 14. 📧 Contact & Support
 
 For questions, issues, or collaboration:
 - **GitHub Issues**: [UAV-Aegis/issues](https://github.com/Rhutvik-pachghare1999/UAV-Aegis/issues)
